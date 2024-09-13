@@ -39,7 +39,8 @@
                 </div>
 
                 <div class="flex justify-center mt-4">
-                    <p class="text-xl font-semibold text-white dark:text-white">Muhammad fajar alfad - 2217051148</p>
+                    <p class="text-xl font-semibold text-white dark:text-white"> Muhammad fajar alfad </p>
+                    <p class="text-xl font-semibold text-white dark:text-white"> - 2217051148</p>
                 </div>
 
                 <div class="mt-16">
