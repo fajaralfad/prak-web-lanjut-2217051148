@@ -42,7 +42,7 @@
 
         <!-- Foto Profil -->
         <div class="relative mb-4">
-            <img src="https://via.placeholder.com/120" alt="Foto Profil" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover z-10 relative">
+            <img src="https://i.postimg.cc/cCc71df3/laravel-8.jpg" alt="Foto Profil" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover z-10 relative">
             <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full filter blur-md opacity-60"></div>
         </div>
 
@@ -60,31 +60,6 @@
             <p class="flex items-center text-gray-700">
                 <i class="fas fa-id-card mr-2 text-purple-500"></i>{{ $npm }}
             </p>
-        </div>
-
-        <!-- Skill Bars -->
-        <div class="mb-4">
-            <h3 class="text-lg font-semibold mb-2 text-gray-700">Skills</h3>
-            <div class="space-y-1">
-                <div class="flex items-center">
-                    <span class="text-sm w-20 text-right mr-2">HTML</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-2">
-                        <div class="bg-blue-600 h-2 rounded-full" style="width: 90%"></div>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <span class="text-sm w-20 text-right mr-2">CSS</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-2">
-                        <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <span class="text-sm w-20 text-right mr-2">JavaScript</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-2">
-                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 75%"></div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Social Media Icons -->
