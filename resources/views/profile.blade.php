@@ -42,7 +42,7 @@
 
         <!-- Foto Profil -->
         <div class="relative mb-4">
-            <img src="https://i.postimg.cc/cCc71df3/laravel-8.jpg" alt="Foto Profil" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover z-10 relative">
+            <img src="https://i.postimg.cc/ZR2Xq2yq/larry-elison.jpg" alt="Foto Profil" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover z-10 relative">
             <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full filter blur-md opacity-60"></div>
         </div>
 
