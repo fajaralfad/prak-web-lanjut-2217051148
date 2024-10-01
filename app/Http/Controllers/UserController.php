@@ -2,83 +2,122 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
+use App\Models\UserModel;
 use Illuminate\Http\Request;
-use App\Models\Kelas; // Import model Kelas
-use App\Models\UserModel; // Import model UserModel
 
 class UserController extends Controller
 {
-    // Menjadikan model UserModel dan Kelas sebagai properti public
-    public UserModel $userModel;
-    public Kelas $kelasModel;
+    protected UserModel $userModel;
+    protected Kelas $kelasModel;
 
-    // Konstruktor untuk menginisialisasi properti
     public function __construct()
     {
         $this->userModel = new UserModel();
         $this->kelasModel = new Kelas();
     }
 
-    // Method untuk menampilkan profil pengguna
-    public function profile($nama = "", $kelas = "", $npm = "")
+    /**
+     * Display a listing of users.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index()
     {
-        $data = [
-            'nama' => $nama,
-            'kelas' => $kelas,
-            'npm' => $npm,
-        ];
+        // Paginate users directly from the model
+        $users = $this->userModel->paginate(5);
 
-        return view('profile', $data);
-    }
-
-    // Method untuk menampilkan form create user
-    public function create()
-    {
-        // Mengambil semua data kelas menggunakan model kelas yang diinisialisasi
-        $kelas = $this->kelasModel::all();
-
-        // Menyertakan data kelas dan judul ke dalam view create_user
-        return view('create_user', [
-            'kelas' => $kelas,
-            'title' => 'Create User', // Menambahkan title untuk halaman
+        return view('list_user', [
+            'title' => 'List User',
+            'users' => $users,
         ]);
     }
 
-    // Method untuk menyimpan data user ke dalam database
+    /**
+     * Show the form for creating a new user.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function create()
+    {
+        // Fetch all classes to populate the dropdown in the create user form
+        $kelas = $this->kelasModel::all();
+
+        return view('create_user', [
+            'kelas' => $kelas,
+            'title' => 'Create User',
+        ]);
+    }
+
+    /**
+     * Store a newly created user in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
-        // Validasi input
+        // Validate incoming request data
         $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'npm' => 'required|string|max:255',
-            'kelas_id' => 'required|exists:kelas,id', // Memastikan kelas_id valid
+            'kelas_id' => 'required|integer',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-    
-        // Menyimpan data pengguna menggunakan model user yang diinisialisasi
+
+        $fotoPath = null;
+
+        // Handle file upload if a photo is provided
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
+            $fotoPath = 'upload/img/' . $foto->getClientOriginalName();
+            $foto->move(public_path('upload/img'), $fotoPath);
+        }
+
+        // Create a new user record
         $this->userModel->create([
             'nama' => $validatedData['nama'],
             'npm' => $validatedData['npm'],
             'kelas_id' => $validatedData['kelas_id'],
+            'foto' => $fotoPath,
         ]);
-    
-        // Redirect ke halaman '/user' setelah menyimpan data
-        return redirect()->to('/user')->with('success', 'User berhasil ditambahkan!');
-    }
-    
 
-    // Method untuk menampilkan daftar user
-    public function index()
+        return redirect()->route('users.index')
+            ->with('success', 'User berhasil ditambahkan');
+    }
+
+    /**
+     * Display the user profile.
+     *
+     * @param string $nama
+     * @param string $kelas
+     * @param string $npm
+     * @return \Illuminate\View\View
+     */
+    public function profile($nama = "", $kelas = "", $npm = "")
     {
-    // Ambil data user dengan pagination
-    $users = $this->userModel->getUserQuery()->paginate(5); // Use the query method
-
-    // Kirim data users dan title ke view
-    $data = [
-        'title' => 'List User',
-        'users' => $users, // Pastikan variabel $users dikirim ke view
-    ];
-
-    return view('list_user', $data);
+        return view('profile', [
+            'title' => 'Profile', // Include title for consistency
+            'nama' => $nama,
+            'kelas' => $kelas,
+            'npm' => $npm,
+        ]);
     }
 
+    /**
+     * Display the user detail.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
+    public function show($id)
+    {
+        // Retrieve the user based on ID
+        $user = $this->userModel->findOrFail($id); // Ensure to handle cases where the user may not exist
+
+        return view('profile', [
+            'title' => 'Profile',
+            'user' => $user,
+        ]);
+    }
 }
