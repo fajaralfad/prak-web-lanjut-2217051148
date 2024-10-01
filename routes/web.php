@@ -27,5 +27,6 @@ Route::get('/user/create', [UserController::class, 'create']);
 // Route untuk menyimpan data user
 Route::post('/user/store', [UserController::class, 'store']);
 
-// Route untuk menampilkan semua user dengan method index
-Route::get('/user', [UserController::class, 'index']);
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
+Route::get('/user/{id}', [UserController::class, 'show'])->name('users.show');
