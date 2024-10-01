@@ -40,9 +40,8 @@
         <!-- Background Pattern -->
         <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-t-2xl"></div>
 
-        <!-- Foto Profil -->
         <div class="relative mb-4">
-            <img src="https://i.postimg.cc/ZR2Xq2yq/larry-elison.jpg" alt="Foto Profil" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover z-10 relative">
+            <img src="{{ asset($user->foto ?? 'upload/img/default.jpg') }}" alt="Foto Profil" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover z-10 relative">
             <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full filter blur-md opacity-60"></div>
         </div>
 
@@ -52,13 +51,13 @@
         <!-- Data Mahasiswa dengan Ikon -->
         <div class="text-left text-base font-medium space-y-2 mb-4">
             <p class="flex items-center text-gray-700">
-                <i class="fas fa-user-graduate mr-2 text-blue-500"></i>{{ $nama }}
+                <i class="fas fa-user-graduate mr-2 text-blue-500"></i>{{ $user->nama }}
             </p>
             <p class="flex items-center text-gray-700">
-                <i class="fas fa-chalkboard-teacher mr-2 text-green-500"></i>{{ $kelas }}
+                <i class="fas fa-chalkboard-teacher mr-2 text-green-500"></i>{{ $user->kelas->nama_kelas ?? 'Tidak ada kelas' }}
             </p>
             <p class="flex items-center text-gray-700">
-                <i class="fas fa-id-card mr-2 text-purple-500"></i>{{ $npm }}
+                <i class="fas fa-id-card mr-2 text-purple-500"></i>{{ $user->npm }}
             </p>
         </div>
 
@@ -70,6 +69,5 @@
             <a href="#" class="text-gray-400 hover:text-gray-700 icon-hover"><i class="fab fa-github text-xl"></i></a>
         </div>
     </div>
-
 </body>
 </html>

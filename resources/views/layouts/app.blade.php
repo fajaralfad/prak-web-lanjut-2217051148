@@ -43,13 +43,13 @@
 
     <!-- Header with Breadcrumb -->
     <header class="bg-primary text-white">
-        <div class="container mx-auto px-6 py-8">
+        <div class="container mx-auto px-6 py-4"> <!-- Ubah padding top agar lebih kecil -->
             <h1 class="text-3xl font-bold">{{ $title }}</h1>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 py-8">
+    <main class="container mx-auto px-6 py-4"> <!-- Ubah padding agar lebih kecil -->
         @yield('content')
     </main>
 
