@@ -15,6 +15,7 @@ class KelasSeeder extends Seeder
             'B',
             'C',
             'D',
+            'E',
         ];
 
         // Memasukkan data kelas satu per satu ke dalam tabel
