@@ -18,9 +18,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route ke halaman profil pengguna
 Route::get('/user/profile', [UserController::class, 'profile']);
 
-Route::get('/user/create', [UserController::class,
-'create']);
+// Route untuk menampilkan form create user
+Route::get('/user/create', [UserController::class, 'create']);
 
+// Route untuk menyimpan data user
 Route::post('/user/store', [UserController::class, 'store']);
+
+// Route untuk menampilkan semua user dengan method index
+Route::get('/user', [UserController::class, 'index']);
