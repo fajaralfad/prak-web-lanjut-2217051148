@@ -1,7 +1,7 @@
 @extends('layouts.app') <!-- Menggunakan layout app.blade.php -->
 
 @section('content') <!-- Mulai mendefinisikan bagian konten -->
-<div class="flex justify-center items-center min-h-screen bg-gray-100"> <!-- Flexbox untuk pusat -->
+<div class="flex justify-center items-center min-h-screen "> <!-- Flexbox untuk pusat -->
     <div class="max-w-sm w-full bg-white p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300">
         <h1 class="text-2xl font-semibold text-center text-gray-800 mb-4">Create User</h1>
 
