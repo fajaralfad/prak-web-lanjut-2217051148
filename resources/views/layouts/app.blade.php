@@ -49,7 +49,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 py-4"> <!-- Ubah padding agar lebih kecil -->
+    <main class="container mt-3 mx-auto px-6 py-4"> <!-- Ubah padding agar lebih kecil -->
         @yield('content')
     </main>
 

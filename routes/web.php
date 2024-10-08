@@ -18,15 +18,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route ke halaman profil pengguna
 Route::get('/user/profile', [UserController::class, 'profile']);
 
-// Route untuk menampilkan form create user
 Route::get('/user/create', [UserController::class, 'create']);
 
-// Route untuk menyimpan data user
 Route::post('/user/store', [UserController::class, 'store']);
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
 Route::get('/user/{id}', [UserController::class, 'show'])->name('users.show');
+
+Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+
+Route::put('/user/{id}', [UserController::class, 'update'])->name('users.update');
+
+Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('users.destroy');

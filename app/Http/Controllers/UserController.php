@@ -17,47 +17,26 @@ class UserController extends Controller
         $this->kelasModel = new Kelas();
     }
 
-    /**
-     * Display a listing of users.
-     *
-     * @return \Illuminate\View\View
-     */
     public function index()
     {
-        // Paginate users directly from the model
         $users = $this->userModel->paginate(5);
-
         return view('list_user', [
             'title' => 'List User',
             'users' => $users,
         ]);
     }
 
-    /**
-     * Show the form for creating a new user.
-     *
-     * @return \Illuminate\View\View
-     */
     public function create()
     {
-        // Fetch all classes to populate the dropdown in the create user form
         $kelas = $this->kelasModel::all();
-
         return view('create_user', [
             'kelas' => $kelas,
             'title' => 'Create User',
         ]);
     }
 
-    /**
-     * Store a newly created user in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function store(Request $request)
     {
-        // Validate incoming request data
         $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'npm' => 'required|string|max:255',
@@ -67,14 +46,12 @@ class UserController extends Controller
 
         $fotoPath = null;
 
-        // Handle file upload if a photo is provided
         if ($request->hasFile('foto')) {
             $foto = $request->file('foto');
             $fotoPath = 'upload/img/' . $foto->getClientOriginalName();
             $foto->move(public_path('upload/img'), $fotoPath);
         }
 
-        // Create a new user record
         $this->userModel->create([
             'nama' => $validatedData['nama'],
             'npm' => $validatedData['npm'],
@@ -82,42 +59,65 @@ class UserController extends Controller
             'foto' => $fotoPath,
         ]);
 
-        return redirect()->route('users.index')
-            ->with('success', 'User berhasil ditambahkan');
+        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan');
     }
 
-    /**
-     * Display the user profile.
-     *
-     * @param string $nama
-     * @param string $kelas
-     * @param string $npm
-     * @return \Illuminate\View\View
-     */
     public function profile($nama = "", $kelas = "", $npm = "")
     {
         return view('profile', [
-            'title' => 'Profile', // Include title for consistency
+            'title' => 'Profile',
             'nama' => $nama,
             'kelas' => $kelas,
             'npm' => $npm,
         ]);
     }
 
-    /**
-     * Display the user detail.
-     *
-     * @param int $id
-     * @return \Illuminate\View\View
-     */
     public function show($id)
     {
-        // Retrieve the user based on ID
-        $user = $this->userModel->findOrFail($id); // Ensure to handle cases where the user may not exist
-
+        $user = $this->userModel->findOrFail($id);
         return view('profile', [
             'title' => 'Profile',
             'user' => $user,
         ]);
+    }
+
+    public function edit($id)
+    {
+        $user = $this->userModel->findOrFail($id);
+        $kelas = $this->kelasModel::all();
+        $title = 'Edit User';
+        return view('edit_user', compact('user', 'kelas', 'title'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = $this->userModel->findOrFail($id);
+
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255',
+            'npm' => 'required|string|max:255',
+            'kelas_id' => 'required|integer',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $user->nama = $validatedData['nama'];
+        $user->npm = $validatedData['npm'];
+        $user->kelas_id = $validatedData['kelas_id'];
+
+        if ($request->hasFile('foto')) {
+            $fileName = time() . '.' . $request->foto->extension();
+            $request->foto->move(public_path('uploads'), $fileName);
+            $user->foto = 'uploads/' . $fileName;
+        }
+
+        $user->save();
+        return redirect()->route('users.index')->with('success', 'User updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        $user = $this->userModel->findOrFail($id);
+        $user->delete();
+        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }
