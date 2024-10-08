@@ -35,44 +35,43 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPM</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detail</th> <!-- Kolom Detail -->
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detail</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($users as $user)
                     <tr class="hover:bg-gray-50 transition-colors duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= $user['id'] ?></td>
-                        <td class="px-6 py-4 whitespace-nowrap"><?= $user['nama'] ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user['id'] }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $user['nama'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                <?= $user['npm'] ?>
-                            </span>
+                            <span class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ $user['npm'] }}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                 {{ $user->kelas ? $user->kelas->nama_kelas : 'Tidak ada kelas' }}
                             </span>
                         </td>
-
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-3">
-                                <a href="{{ url('/user/edit/' . $user->id) }}" class="text-indigo-600 hover:text-indigo-900 flex items-center space-x-1">
+                                <a href="{{ url('/user/' . $user->id . '/edit') }}" class="text-indigo-600 hover:text-indigo-900 flex items-center space-x-1">
                                     <i class="material-icons">edit</i>
                                     <span>Edit</span>
                                 </a>
-                                <a href="{{ url('/user/delete/' . $user->id) }}" 
-                                   onclick="return confirmDelete();"
-                                   class="text-red-600 hover:text-red-900 flex items-center space-x-1">
-                                    <i class="material-icons">delete</i>
-                                    <span>Delete</span>
-                                </a>
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirmDelete();">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900 flex items-center space-x-1">
+                                        <i class="material-icons">delete</i>
+                                        <span>Delete</span>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="{{ route('users.show', $user['id']) }}" class="bg-blue-500 hover:bg-yellow-600 text-white px-2 py-2 rounded-lg flex items-center space-x-1 transition duration-200">
-                            <i class="material-icons">info</i>
-                            <span>Detail</span>
-                            </a> <!-- Link Detail -->
+                                <i class="material-icons">info</i>
+                                <span>Detail</span>
+                            </a>
                         </td>
                     </tr>
                 @endforeach
@@ -82,11 +81,11 @@
 
     <!-- Pagination Section -->
     <div class="mt-4">
-        {{ $users->links() }} <!-- Default Laravel pagination links -->
+        {{ $users->links() }}
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- Delete Confirmation Script -->
 <script>
 function confirmDelete() {
     return confirm('Are you sure you want to delete this user? This action cannot be undone.');
