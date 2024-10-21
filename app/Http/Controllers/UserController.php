@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -17,6 +18,7 @@ class UserController extends Controller
         $this->kelasModel = new Kelas();
     }
 
+    // Display the list of users with pagination
     public function index()
     {
         $users = $this->userModel->paginate(5);
@@ -26,6 +28,7 @@ class UserController extends Controller
         ]);
     }
 
+    // Show the form for creating a new user
     public function create()
     {
         $kelas = $this->kelasModel::all();
@@ -35,43 +38,37 @@ class UserController extends Controller
         ]);
     }
 
+    // Store a newly created user in storage
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        // Validate input
+        $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'npm' => 'required|string|max:255',
             'kelas_id' => 'required|integer',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $fotoPath = null;
-
+        // Handle file upload and store in public/storage/foto
+        $filename = null;
         if ($request->hasFile('foto')) {
-            $foto = $request->file('foto');
-            $fotoPath = 'upload/img/' . $foto->getClientOriginalName();
-            $foto->move(public_path('upload/img'), $fotoPath);
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/foto', $filename); // Store file in 'public/storage/foto' directory
         }
 
+        // Save user data to the database
         $this->userModel->create([
-            'nama' => $validatedData['nama'],
-            'npm' => $validatedData['npm'],
-            'kelas_id' => $validatedData['kelas_id'],
-            'foto' => $fotoPath,
+            'nama' => $validated['nama'],
+            'npm' => $validated['npm'],
+            'kelas_id' => $validated['kelas_id'],
+            'foto' => $filename, // Save file name to the database
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan');
+        return redirect()->to('/')->with('success', 'User berhasil dibuat.');
     }
 
-    public function profile($nama = "", $kelas = "", $npm = "")
-    {
-        return view('profile', [
-            'title' => 'Profile',
-            'nama' => $nama,
-            'kelas' => $kelas,
-            'npm' => $npm,
-        ]);
-    }
-
+    // Display the user's profile
     public function show($id)
     {
         $user = $this->userModel->findOrFail($id);
@@ -81,18 +78,24 @@ class UserController extends Controller
         ]);
     }
 
+    // Show the form for editing the specified user
     public function edit($id)
     {
         $user = $this->userModel->findOrFail($id);
         $kelas = $this->kelasModel::all();
-        $title = 'Edit User';
-        return view('edit_user', compact('user', 'kelas', 'title'));
+        return view('edit_user', [
+            'user' => $user,
+            'kelas' => $kelas,
+            'title' => 'Edit User',
+        ]);
     }
 
+    // Update the specified user in storage
     public function update(Request $request, $id)
     {
         $user = $this->userModel->findOrFail($id);
 
+        // Validate input
         $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'npm' => 'required|string|max:255',
@@ -100,24 +103,38 @@ class UserController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        // Update user data
         $user->nama = $validatedData['nama'];
         $user->npm = $validatedData['npm'];
         $user->kelas_id = $validatedData['kelas_id'];
 
+        // Update the photo if uploaded
         if ($request->hasFile('foto')) {
-            $fileName = time() . '.' . $request->foto->extension();
-            $request->foto->move(public_path('uploads'), $fileName);
-            $user->foto = 'uploads/' . $fileName;
+            // Delete the old photo if exists
+            if ($user->foto) {
+                Storage::delete('public/foto/' . $user->foto);
+            }
+
+            $fileName = time() . '_' . $request->foto->getClientOriginalName();
+            $request->foto->storeAs('public/foto', $fileName); // Store file in 'public/storage/foto'
+            $user->foto = $fileName; // Save the new file name
         }
 
         $user->save();
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
+        return redirect()->to('/')->with('success', 'User berhasil diperbarui.');
     }
 
+    // Remove the specified user from storage
     public function destroy($id)
     {
         $user = $this->userModel->findOrFail($id);
+        
+        // Delete the user's photo from storage
+        if ($user->foto) {
+            Storage::delete('public/foto/' . $user->foto);
+        }
+
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return redirect()->to('/')->with('success', 'User berhasil dihapus.');
     }
 }
