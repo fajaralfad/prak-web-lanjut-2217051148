@@ -34,6 +34,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPM</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detail</th>
                 </tr>
@@ -50,6 +51,9 @@
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                 {{ $user->kelas ? $user->kelas->nama_kelas : 'Tidak ada kelas' }}
                             </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <img src="{{ $user['foto'] ? asset($user['foto']) : asset('images/default.png') }}" alt="User Photo" class="w-16 h-16 rounded-full object-cover">
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-3">
@@ -92,3 +96,5 @@ function confirmDelete() {
 }
 </script>
 @endsection
+
+
