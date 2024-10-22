@@ -15,8 +15,8 @@ class UserModel extends Model
     // Lindungi kolom 'id' dari mass-assignment
     protected $guarded = ['id'];
 
-    // Izinkan mass-assignment untuk kolom berikut, termasuk 'foto'
-    protected $fillable = ['nama', 'npm', 'kelas_id', 'foto']; // Menambahkan 'foto' ke dalam fillable
+    // Izinkan mass-assignment untuk kolom berikut, termasuk 'foto', 'semester', dan 'jurusan'
+    protected $fillable = ['nama', 'npm', 'kelas_id', 'semester', 'jurusan', 'foto'];
 
     /**
      * Relasi ke model Kelas
@@ -33,15 +33,16 @@ class UserModel extends Model
      */
     public function getUser($id = null)
     {
-        $query = $this->select('user.id', 'user.nama', 'user.npm', 'user.foto')
+        $query = $this->select('user.id', 'user.nama', 'user.npm', 'user.foto', 'user.semester', 'user.jurusan') // Menambahkan semester dan jurusan
             ->join('kelas', 'kelas.id', '=', 'user.kelas_id')
             ->addSelect('kelas.nama_kelas');
-            
+
         if ($id !== null) {
             $query->where('user.id', $id);
         }
-        
+
         return $query;
     }
-
 }
+
+
