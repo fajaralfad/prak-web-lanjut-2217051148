@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -14,73 +15,29 @@
         </a>
     </div>
 
-    <!-- Search and Filter Section -->
-    <div class="mb-6 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
-        <div class="relative w-full sm:w-64">
-            <i class="material-icons absolute left-3 top-3 text-gray-400">search</i>
-            <input type="text" placeholder="Search users..." class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent">
-        </div>
-        <div class="text-sm text-gray-600">
-            Showing <span class="font-semibold">{{ count($users) }}</span> users
-        </div>
-    </div>
+    <!-- Card Grid Section -->
+    <div class="row">
+        @foreach($users as $user)
+            <div class="col-md-4 mb-4">
+                <div class="card" style="width: 18rem;">
+                    <!-- User Photo -->
+                    <img class="card-img-top" src="{{ $user['foto'] ? asset($user['foto']) : asset('images/default.png') }}" alt="{{ $user['nama'] }}'s Photo" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <!-- User Info -->
+                        <h5 class="card-title">{{ $user['nama'] }}</h5>
+                        <p class="card-text">NPM: {{ $user['npm'] }}</p>
+                        <p class="card-text">Kelas: {{ $user->kelas ? $user->kelas->nama_kelas : 'Tidak ada kelas' }}</p>
+                        <p class="card-text">Jurusan: {{ $user['jurusan'] }}</p>
+                        <p class="card-text">Semester: {{ $user['semester'] }}</p>
 
-    <!-- Table Section -->
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead>
-                <tr class="bg-gray-50">
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPM</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detail</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($users as $user)
-                    <tr class="hover:bg-gray-50 transition-colors duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user['id'] }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $user['nama'] }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ $user['npm'] }}</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                {{ $user->kelas ? $user->kelas->nama_kelas : 'Tidak ada kelas' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <img src="{{ $user['foto'] ? asset($user['foto']) : asset('images/default.png') }}" alt="User Photo" class="w-16 h-16 rounded-full object-cover">
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex space-x-3">
-                                <a href="{{ url('/user/' . $user->id . '/edit') }}" class="text-indigo-600 hover:text-indigo-900 flex items-center space-x-1">
-                                    <i class="material-icons">edit</i>
-                                    <span>Edit</span>
-                                </a>
-                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirmDelete();">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900 flex items-center space-x-1">
-                                        <i class="material-icons">delete</i>
-                                        <span>Delete</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('users.show', $user['id']) }}" class="bg-blue-500 hover:bg-yellow-600 text-white px-2 py-2 rounded-lg flex items-center space-x-1 transition duration-200">
-                                <i class="material-icons">info</i>
-                                <span>Detail</span>
-                            </a>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                        <!-- Detail Button -->
+                        <a href="{{ route('users.show', $user['id']) }}" class="btn btn-primary">
+                            Detail Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 
     <!-- Pagination Section -->
@@ -88,13 +45,4 @@
         {{ $users->links() }}
     </div>
 </div>
-
-<!-- Delete Confirmation Script -->
-<script>
-function confirmDelete() {
-    return confirm('Are you sure you want to delete this user? This action cannot be undone.');
-}
-</script>
 @endsection
-
-
